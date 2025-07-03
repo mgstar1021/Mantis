@@ -138,28 +138,42 @@ extension UIBezierPath {
         let sideOne = rect.width * 0.4
         let sideTwo = rect.height * 0.3
         let arcRadius = sqrt(sideOne*sideOne + sideTwo*sideTwo)/2
+        
+        // Top Left Arc
+        let arcCenter = CGPoint(x: rect.minX + rect.width * 0.3, y: rect.minY + rect.height * 0.35)
+        let startAngle = 180.degreesToRadians
 
-        // Left Hand Curve
-        self.addArc(withCenter: CGPoint(x: rect.minX + rect.width * 0.3, y: rect.minY + rect.height * 0.35),
+        self.addArc(withCenter: arcCenter,
                     radius: arcRadius,
-                    startAngle: 135.degreesToRadians,
+                    startAngle: startAngle,
                     endAngle: 315.degreesToRadians,
                     clockwise: true)
+
+        let startPoint = CGPoint(
+            x: arcCenter.x + arcRadius * cos(startAngle),
+            y: arcCenter.y + arcRadius * sin(startAngle)
+        )
 
         // Top Centre Dip
         self.addLine(to: CGPoint(x: rect.minX + rect.width/2, y: rect.minY + rect.height * 0.2))
 
-        // Right Hand Curve
+
+        // Top Right Arc
         self.addArc(withCenter: CGPoint(x: rect.minX + rect.width * 0.7, y: rect.minY + rect.height * 0.35),
                     radius: arcRadius,
                     startAngle: 225.degreesToRadians,
-                    endAngle: 45.degreesToRadians,
+                    endAngle: 0.degreesToRadians,
                     clockwise: true)
 
-        // Right Bottom Line
-        self.addLine(to: CGPoint(x: rect.minX + rect.width * 0.5, y: rect.minY + rect.height * 0.95))
+        // Bottom Right Curve
+        self.addQuadCurve(to: CGPoint(x: rect.midX, y: rect.minY + rect.height * 0.9),
+                          controlPoint: CGPoint(x: rect.maxX - rect.width * 0.05, y: rect.maxY - rect.height * 0.4))
+        
+        // Bottom Left Curve
+        self.addQuadCurve(to: startPoint,
+                          controlPoint: CGPoint(x: rect.minX + rect.width * 0.05, y: rect.maxY - rect.height * 0.4))
 
-        // Left Bottom Line
+        
         self.close()
     }
 }
